@@ -1,13 +1,29 @@
 #define PINOTRIG 33 // pin for trigger
 #define PINOECHO 31 
 #define PINOBUZZER 49// pin for sensor's echo
-#define CDW_MS 200 // constant cooldown in ms for delay.
+#define CDW_MS 500 // constant cooldown in ms for delay.
 
 #define D_MAX 100
+#define D_MIN 0
+#define CONST_SOM 0.0343
+#define CONST_BIP_TIME D_MAX * 4
 
 float tempo = 0.0;
 float distancia = 0.0;
-int delay_tempo = 50;
+
+void calc_distancia(float *ptr_distancia,float tempo,float __CONST_SOM)
+{
+  *ptr_distancia = (tempo * __CONST_SOM ) / 2;
+}
+
+void bip_sensor(int freq,int time_)
+{
+  delay(time_);
+  tone(PINOBUZZER,freq);
+  delay(time_);
+  noTone(PINOBUZZER);
+}
+
 void setup()
 {
   pinMode(PINOTRIG,OUTPUT);
@@ -23,31 +39,12 @@ void loop(){
   digitalWrite(PINOTRIG, HIGH);
   delayMicroseconds(10);
   digitalWrite(PINOTRIG, LOW);
-  tempo = pulseIn(PINOECHO, HIGH);
-  distancia = (tempo*0.0343)/2;
+  calc_distancia(&distancia,pulseIn(PINOECHO,HIGH),CONST_SOM);
   Serial.println(distancia);
-  delay(CDW_MS);
+  delay(CDW_MS / 2);
 
-  if(distancia <= 100)
+  if(distancia <= D_MAX && distancia >= D_MIN)
   {
-      tone(PINOBUZZER,1000);
-      if(distancia < 20)
-      {
-        delay(50);
-        noTone(PINOBUZZER);
-      }
-
-      else if(distancia < 50)
-      {
-        delay(100);
-        noTone(PINOBUZZER);
-      }
-
-      else
-      {
-        delay(200);
-        noTone(PINOBUZZER);
-        delay(200);
-      }
+    bip_sensor(1000,CDW_MS / (distancia / CONST_BIP_TIME));  
   }
 }
