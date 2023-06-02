@@ -1,5 +1,7 @@
 #include <LiquidCrystal.h>
 
+/*  Functions */
+
 
 /*
   LEFT:   481,478,480,481;
@@ -26,10 +28,6 @@ const int PIN_BL = 10;
 const int SRL_CFG = 9600;
 const int SCREEN_X = 16;
 const int SCREEN_Y = 2;
-
-/*Setting const for if conditions:*/
-
-const int VAR_RIGHT = 100;
 
 
 LiquidCrystal lcd(PIN_RS,PIN_EN,PIN_D4,PIN_D5,PIN_D6,PIN_D7);
