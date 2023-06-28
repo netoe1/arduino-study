@@ -17,6 +17,7 @@ void loop()
     Serial.write(hc06.read());
   }
 
+  // Do Monitor Serial para P/HC-06
   if(hc06.available())
   {
     hc06.write(Serial.read());
